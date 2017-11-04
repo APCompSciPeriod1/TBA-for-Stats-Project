@@ -15,10 +15,10 @@ public class ApiClient {
     OkHttpClient client = new OkHttpClient();
     Gson gson = new Gson();
 
-    String run(String url) throws IOException {
+    String run(String urlModifier) throws IOException {
         Request request = new Request.Builder()
                 .header(headerName,headerKey)
-                .url(url)
+                .url("https://www.thebluealliance.com/api/v3"+urlModifier)
                 .build();
 
         try (Response response = client.newCall(request).execute()) {
@@ -27,13 +27,22 @@ public class ApiClient {
     }
 
 
-    public Event findEventOPR(Event event) throws IOException{
+    public PowerRatingData findPowerRatings(Event event) throws IOException{
 
         String modifier = "/event/" + event.eventKey + "/oprs";
 
-        String response = this.run("https://www.thebluealliance.com/api/v3"+modifier);
+        String response = run(modifier);
 
-        return this.gson.fromJson(response,Event.class);
+        return gson.fromJson(response,PowerRatingData.class);
 
+    }
+
+    public EventRankingsData findRankings(Event event) throws IOException{
+
+        String modifier = "/event/" + event.eventKey + "/rankings";
+
+        String response = run(modifier);
+
+        return gson.fromJson(response,EventRankingsData.class);
     }
 }
